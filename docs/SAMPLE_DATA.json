@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "name": "Project Admin",
+      "email": "admin@aics.local",
+      "password": "Admin@12345",
+      "role": "admin"
+    },
+    {
+      "name": "Aarav Sharma",
+      "email": "aarav@example.com",
+      "password": "User@12345",
+      "role": "user"
+    }
+  ],
+  "chatPrompts": [
+    "My VPN is not connecting and I have an urgent client call.",
+    "I forgot my password and cannot access the employee portal.",
+    "Outlook is not syncing emails after the last update.",
+    "The production server is slow and users are reporting errors."
+  ],
+  "tickets": [
+    {
+      "issue": "VPN not connecting before client call",
+      "status": "open",
+      "priority": "critical",
+      "assignedTo": "IT Support Desk"
+    }
+  ]
+}
