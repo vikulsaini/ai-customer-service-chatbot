@@ -1,3 +1,4 @@
+import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { BarChart3, Bot, LogOut, Moon, Settings, Shield, Sun, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";

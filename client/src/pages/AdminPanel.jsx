@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Shield, Users, MessageSquare, Ticket } from "lucide-react";
 import StatCard from "../components/StatCard";
 import api from "../services/api";

@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthCard } from "./Login";
 import { useAuth } from "../context/AuthContext";

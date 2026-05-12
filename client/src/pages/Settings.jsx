@@ -1,3 +1,4 @@
+import React from "react";
 import { Bell, Globe2, Languages } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 

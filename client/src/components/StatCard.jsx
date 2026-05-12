@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function StatCard({ label, value, icon: Icon, tone = "text-ocean" }) {
   return (
     <div className="glass rounded-lg p-5">

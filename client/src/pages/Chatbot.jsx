@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import { Mic, Paperclip, Send, Volume2 } from "lucide-react";
 import Button from "../components/Button";
