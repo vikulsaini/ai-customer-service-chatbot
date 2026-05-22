@@ -84,7 +84,9 @@ Demo admin: value from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 - AI chatbot with typing state, timestamps, quick replies, voice-to-text, speech synthesis, emoji-ready input, attachment control, PDF export
 - Context-aware conversation storage in MongoDB
 - FAQ intent handling, sentiment analysis, keyword extraction, chat categorization
+- FAQ collection and searchable FAQ page
 - Ticket generation for urgent or unresolved IT issues
+- Dedicated chat history and ticket management pages
 - User dashboard with chat statistics
 - Admin panel for users, chat logs, analytics, and account blocking endpoint
 - SEO-friendly title and meta description

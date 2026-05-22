@@ -7,7 +7,8 @@ const id = () => crypto.randomUUID();
 const store = {
   users: [],
   chats: [],
-  tickets: []
+  tickets: [],
+  faqs: []
 };
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -43,7 +44,8 @@ export const memoryStore = {
     const user = store.users.find((item) => item._id === userId);
     if (!user) return null;
     Object.assign(user, data, { updatedAt: now() });
-    return clone(user);
+    const { password, ...publicUser } = user;
+    return clone(publicUser);
   },
 
   async listUsers() {
@@ -98,11 +100,35 @@ export const memoryStore = {
     return clone(store.tickets.filter((ticket) => isAdmin || ticket.userId === userId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
   },
 
-  async updateTicket(ticketId, data) {
-    const ticket = store.tickets.find((item) => item._id === ticketId);
+  async updateTicket(ticketId, data, userId, isAdmin = false) {
+    const ticket = store.tickets.find((item) => item._id === ticketId && (isAdmin || item.userId === userId));
     if (!ticket) return null;
     Object.assign(ticket, data, { updatedAt: now() });
     return clone(ticket);
+  },
+
+  async createFaq(data) {
+    const faq = {
+      _id: id(),
+      question: data.question,
+      answer: data.answer,
+      category: data.category || "general",
+      keywords: data.keywords || [],
+      active: data.active ?? true,
+      createdAt: now(),
+      updatedAt: now()
+    };
+    store.faqs.push(faq);
+    return clone(faq);
+  },
+
+  async listFaqs(search = "") {
+    const q = search.toLowerCase();
+    const faqs = store.faqs
+      .filter((faq) => faq.active)
+      .filter((faq) => !q || `${faq.question} ${faq.answer} ${faq.category} ${faq.keywords.join(" ")}`.toLowerCase().includes(q))
+      .sort((a, b) => a.category.localeCompare(b.category) || a.question.localeCompare(b.question));
+    return clone(faqs);
   },
 
   async analytics() {
@@ -110,6 +136,7 @@ export const memoryStore = {
       users: store.users.length,
       chats: store.chats.length,
       tickets: store.tickets.length,
+      faqs: store.faqs.length,
       resolvedQueries: store.tickets.filter((ticket) => ticket.status === "resolved").length,
       activeUsers: store.users.filter((user) => user.status === "active").length
     };
@@ -123,6 +150,10 @@ export const memoryStore = {
     if (!store.users.length) {
       await this.createUser({ name: "Project Admin", email: process.env.ADMIN_EMAIL || "admin@aics.local", password: process.env.ADMIN_PASSWORD || "Admin@12345", role: "admin" });
       await this.createUser({ name: "Demo User", email: "demo@example.com", password: "Demo@12345", role: "user" });
+      await this.createFaq({ category: "account", question: "I cannot access my account.", answer: "Verify your email and password first. If the issue persists, use Forgot Password to reset your credentials.", keywords: ["account", "login", "password"] });
+      await this.createFaq({ category: "network", question: "VPN is not connecting.", answer: "Restart the VPN client, confirm internet connectivity, verify MFA, and share the exact error code if the issue continues.", keywords: ["vpn", "network", "remote"] });
+      await this.createFaq({ category: "email", question: "Email is not syncing.", answer: "Check mailbox storage, restart the mail client, test webmail access, and create a ticket if delivery is affected.", keywords: ["email", "outlook", "mail"] });
+      await this.createFaq({ category: "infrastructure", question: "Server is slow or down.", answer: "Share the service name, region, time of impact, and error message. Critical outages should be escalated as high-priority tickets.", keywords: ["server", "incident", "latency"] });
     }
   }
 };

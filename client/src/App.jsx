@@ -7,6 +7,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Chatbot from "./pages/Chatbot";
 import Dashboard from "./pages/Dashboard";
 import AdminPanel from "./pages/AdminPanel";
+import ChatHistory from "./pages/ChatHistory";
+import Tickets from "./pages/Tickets";
+import FAQ from "./pages/FAQ";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -33,6 +36,9 @@ export default function App() {
       <Route element={<Protected><AppLayout /></Protected>}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/chat" element={<Chatbot />} />
+        <Route path="/history" element={<ChatHistory />} />
+        <Route path="/tickets" element={<Tickets />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="/admin" element={<AdminOnly><AdminPanel /></AdminOnly>} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />

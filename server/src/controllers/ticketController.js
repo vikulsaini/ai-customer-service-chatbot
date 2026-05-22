@@ -15,7 +15,13 @@ export const listTickets = async (req, res) => {
 };
 
 export const updateTicket = async (req, res) => {
-  if (usingMemoryStore()) return res.json(await memoryStore.updateTicket(req.params.id, req.body));
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (usingMemoryStore()) {
+    const ticket = await memoryStore.updateTicket(req.params.id, req.body, String(req.user._id), req.user.role === "admin");
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+    return res.json(ticket);
+  }
+  const query = req.user.role === "admin" ? { _id: req.params.id } : { _id: req.params.id, userId: req.user._id };
+  const ticket = await Ticket.findOneAndUpdate(query, req.body, { new: true });
+  if (!ticket) return res.status(404).json({ message: "Ticket not found" });
   res.json(ticket);
 };

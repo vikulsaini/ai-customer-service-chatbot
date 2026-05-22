@@ -4,6 +4,7 @@ import { forgotPassword, login, loginRules, logout, resetPassword, signup, signu
 import { validate } from "../middleware/validate.js";
 
 const router = Router();
+router.post("/register", signupRules, validate, signup);
 router.post("/signup", signupRules, validate, signup);
 router.post("/login", loginRules, validate, login);
 router.post("/logout", logout);

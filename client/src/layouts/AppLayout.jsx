@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { BarChart3, Bot, LogOut, Moon, Settings, Shield, Sun, User } from "lucide-react";
+import { BarChart3, Bot, HelpCircle, History, LogOut, Moon, Settings, Shield, Sun, Ticket, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
@@ -14,6 +14,9 @@ export default function AppLayout() {
   const nav = [
     ["/dashboard", BarChart3, "Dashboard"],
     ["/chat", Bot, "Chatbot"],
+    ["/history", History, "History"],
+    ["/tickets", Ticket, "Tickets"],
+    ["/faq", HelpCircle, "FAQ"],
     ["/profile", User, "Profile"],
     ["/settings", Settings, "Settings"]
   ];

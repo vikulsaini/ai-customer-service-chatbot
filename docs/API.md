@@ -14,6 +14,10 @@ Body:
 
 Returns JWT token and public user profile.
 
+### POST `/auth/register`
+
+Alias for signup, included for MCA requirement compatibility.
+
 ### POST `/auth/login`
 
 Body:
@@ -107,7 +111,28 @@ Users see their own tickets. Admins see all tickets.
 
 ### PUT `/tickets/:id`
 
-Updates status, priority, assignee, or issue fields.
+Updates status, priority, assignee, or issue fields. Admins can update all tickets; users can update their own tickets.
+
+## FAQ
+
+### GET `/faq?search=vpn`
+
+Returns active FAQ answers and supports keyword search.
+
+### POST `/faq`
+
+Admin only. Creates a new FAQ entry.
+
+Body:
+
+```json
+{
+  "question": "I cannot access my account.",
+  "answer": "Verify your login credentials. If the issue persists, use Forgot Password.",
+  "category": "account",
+  "keywords": ["login", "account", "password"]
+}
+```
 
 ## Admin
 

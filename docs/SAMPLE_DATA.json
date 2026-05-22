@@ -26,5 +26,17 @@
       "priority": "critical",
       "assignedTo": "IT Support Desk"
     }
+  ],
+  "faqs": [
+    {
+      "question": "I cannot access my account.",
+      "answer": "Verify your login credentials. If the issue persists, use the Forgot Password option.",
+      "category": "account"
+    },
+    {
+      "question": "VPN is not connecting.",
+      "answer": "Restart your VPN client, verify MFA, and confirm your internet connection before raising a network ticket.",
+      "category": "network"
+    }
   ]
 }

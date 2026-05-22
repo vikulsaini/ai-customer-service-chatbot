@@ -8,6 +8,7 @@ const router = Router();
 router.use(protect);
 router.post("/message", body("message").isString().isLength({ min: 1, max: 3000 }), validate, sendMessage);
 router.get("/history", getHistory);
+router.delete("/:id", deleteChat);
 router.delete("/delete/:id", deleteChat);
 
 export default router;
