@@ -1,5 +1,5 @@
 const faq = [
-  { keys: ["password", "reset", "forgot"], intent: "password_reset", category: "account", answer: "You can reset your password from Forgot Password. If SSO is enabled, use your company Google account." },
+  { keys: ["account", "access", "login", "password", "reset", "forgot"], intent: "account_access", category: "account", answer: "Please verify your login credentials. If the issue persists, use the Forgot Password option to reset your password." },
   { keys: ["vpn", "connect", "remote"], intent: "vpn_support", category: "network", answer: "Check your internet, restart the VPN client, and verify MFA. If it still fails, I can create a network support ticket." },
   { keys: ["email", "outlook", "mail"], intent: "email_support", category: "productivity", answer: "For email issues, confirm mailbox storage, restart the client, and try webmail. I can escalate if delivery is affected." },
   { keys: ["server", "down", "latency", "slow"], intent: "incident", category: "infrastructure", answer: "This sounds like an infrastructure incident. Please share the service name, region, and error message." }
