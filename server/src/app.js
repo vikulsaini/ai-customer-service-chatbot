@@ -41,7 +41,8 @@ app.get("/api/health", (_req, res) =>
     ok: true,
     name: "AI Customer Service Chatbot API",
     database: globalThis.__USE_MEMORY_STORE__ ? "memory-demo" : "mongodb",
-    mongoConfigured: Boolean(process.env.MONGO_URI)
+    mongoConfigured: Boolean(process.env.MONGO_URI),
+    note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Set MONGO_URI in Vercel to enable persistent MongoDB Atlas storage."
   })
 );
 app.use("/api", docsRoutes);

@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+  if (!process.env.MONGO_URI) {
+    console.log("MONGO_URI is not configured. Using in-memory demo store.");
+    return false;
+  }
+
   try {
     mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 2500 });
