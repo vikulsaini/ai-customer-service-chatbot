@@ -74,6 +74,7 @@ npm run dev
 
 Frontend: `http://localhost:5173`
 Backend: `http://localhost:5000`
+API docs: `http://localhost:5000/api/docs`
 
 Demo user: `aarav@example.com` / `User@12345`
 Demo admin: value from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
@@ -105,6 +106,7 @@ This repository includes `render.yaml` for the backend and `client/vercel.json` 
 - Use MongoDB Atlas connection string for `MONGO_URI`
 - Set `CLIENT_URL` to your Vercel URL
 - If `MONGO_URI` is not set or MongoDB is unavailable, the API runs in in-memory demo mode. Use MongoDB Atlas for real production persistence.
+- OpenAPI docs are available at `/api/docs` and `/api/openapi.json`.
 
 ### Frontend on Vercel
 
@@ -134,4 +136,4 @@ Example chatbot prompts:
 
 ## Notes
 
-If `OPENAI_API_KEY` is not configured, the app still works using local FAQ and NLP fallback logic. Add an API key to enable generated support responses.
+If `OPENAI_API_KEY` is not configured, the app still works using the free local FAQ and NLP fallback logic. Add an OpenAI API key to enable generated support responses.

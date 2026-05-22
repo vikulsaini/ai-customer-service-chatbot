@@ -10,6 +10,7 @@ import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import faqRoutes from "./routes/faqRoutes.js";
+import docsRoutes from "./routes/docsRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const app = express();
@@ -35,7 +36,15 @@ app.use(cookieParser());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 250, standardHeaders: true, legacyHeaders: false }));
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, name: "AI Customer Service Chatbot API" }));
+app.get("/api/health", (_req, res) =>
+  res.json({
+    ok: true,
+    name: "AI Customer Service Chatbot API",
+    database: globalThis.__USE_MEMORY_STORE__ ? "memory-demo" : "mongodb",
+    mongoConfigured: Boolean(process.env.MONGO_URI)
+  })
+);
+app.use("/api", docsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
