@@ -18,7 +18,7 @@ export default function ForgotPassword() {
         <h1 className="mb-5 text-2xl font-bold dark:text-white">Forgot Password</h1>
         <Input label="Registered email" name="email" type="email" required />
         <Button className="mt-4 w-full">Generate reset token</Button>
-        {token && <p className="mt-4 rounded-lg bg-white/60 p-3 text-sm text-slate-700 dark:bg-white/10 dark:text-slate-200">Demo reset token: {token}</p>}
+        {token && <p className="mt-4 rounded-lg bg-white/60 p-3 text-sm text-slate-700 dark:bg-white/10 dark:text-slate-200">Reset token: {token}</p>}
       </form>
     </main>
   );

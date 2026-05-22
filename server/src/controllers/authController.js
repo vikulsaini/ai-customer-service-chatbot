@@ -8,17 +8,16 @@ export const signupRules = [body("name").isLength({ min: 2 }), body("email").isE
 export const loginRules = [body("email").isEmail(), body("password").notEmpty()];
 
 const publicUser = (user) => ({ id: user._id, name: user.name, email: user.email, role: user.role, profileImage: user.profileImage, status: user.status });
+const productionMemoryAuthMessage = "Database is not configured. Set MONGO_URI in the backend environment to enable account creation and login.";
+
+const productionRequiresDatabase = () => usingMemoryStore() && (process.env.NODE_ENV === "production" || process.env.VERCEL === "1");
 
 export const signup = async (req, res) => {
+  if (productionRequiresDatabase()) return res.status(503).json({ message: productionMemoryAuthMessage });
+
   const exists = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email });
-  if (exists) {
-    if (usingMemoryStore() && (await memoryStore.comparePassword(exists, req.body.password))) {
-      const token = signToken(exists._id);
-      setAuthCookie(res, token);
-      return res.status(200).json({ user: publicUser(exists), token, message: "Account already exists. Signed in successfully." });
-    }
-    return res.status(409).json({ message: "Email already registered" });
-  }
+  if (exists) return res.status(409).json({ message: "Email already registered" });
+
   const user = usingMemoryStore() ? await memoryStore.createUser(req.body) : await User.create(req.body);
   const token = signToken(user._id);
   setAuthCookie(res, token);
@@ -26,11 +25,9 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  let user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
-  if (!user && usingMemoryStore() && req.body.password.length >= 8) {
-    const name = req.body.email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-    user = await memoryStore.createUser({ name: name || "Demo User", email: req.body.email, password: req.body.password });
-  }
+  if (productionRequiresDatabase()) return res.status(503).json({ message: productionMemoryAuthMessage });
+
+  const user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
   const matches = user && (usingMemoryStore() ? await memoryStore.comparePassword(user, req.body.password) : await user.matchPassword(req.body.password));
   if (!matches) return res.status(401).json({ message: "Invalid credentials" });
   const token = signToken(user._id);
@@ -44,18 +41,20 @@ export const logout = (_req, res) => {
 };
 
 export const forgotPassword = async (req, res) => {
-  if (usingMemoryStore()) return res.json({ message: "Demo reset token generated.", resetToken: crypto.randomBytes(12).toString("hex") });
+  if (productionRequiresDatabase()) return res.status(503).json({ message: productionMemoryAuthMessage });
+  if (usingMemoryStore()) return res.json({ message: "Local reset token generated.", resetToken: crypto.randomBytes(12).toString("hex") });
   const user = await User.findOne({ email: req.body.email });
   if (!user) return res.json({ message: "If the email exists, a reset token has been generated." });
   const token = crypto.randomBytes(24).toString("hex");
   user.resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
   user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
   await user.save();
-  res.json({ message: "Password reset token generated for demo email flow.", resetToken: token });
+  res.json({ message: "Password reset token generated.", resetToken: token });
 };
 
 export const resetPassword = async (req, res) => {
-  if (usingMemoryStore()) return res.json({ message: "Password reset accepted in demo mode" });
+  if (productionRequiresDatabase()) return res.status(503).json({ message: productionMemoryAuthMessage });
+  if (usingMemoryStore()) return res.json({ message: "Password reset accepted in local mode" });
   const hashed = crypto.createHash("sha256").update(req.body.token).digest("hex");
   const user = await User.findOne({ resetPasswordToken: hashed, resetPasswordExpires: { $gt: Date.now() } });
   if (!user) return res.status(400).json({ message: "Invalid or expired reset token" });

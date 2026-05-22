@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { AuthCard } from "./Login";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,7 +8,7 @@ export default function Signup() {
   const navigate = useNavigate();
   const onSubmit = async (e) => {
     e.preventDefault();
-    const ok = await signup(Object.fromEntries(new FormData(e.currentTarget))).catch((err) => toast.error(err.response?.data?.message || "Signup failed"));
+    const ok = await signup(Object.fromEntries(new FormData(e.currentTarget)));
     if (ok) navigate("/dashboard");
   };
   return <AuthCard title="Create your account" footer={<Link className="text-ocean" to="/login">Already registered</Link>} onSubmit={onSubmit} loading={loading} submit="Signup" signup />;

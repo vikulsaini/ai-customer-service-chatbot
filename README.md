@@ -7,7 +7,7 @@ Production-ready full-stack web application for the MCA project **Artificial Int
 - Frontend: React.js, Vite, Tailwind CSS, Framer Motion, dark/light mode
 - Backend: Node.js, Express.js, MVC architecture
 - Database: MongoDB with Mongoose
-- Authentication: JWT, bcrypt password hashing, protected routes, forgot-password demo flow
+- Authentication: JWT, bcrypt password hashing, protected routes, forgot-password reset flow
 - AI/NLP: OpenAI Responses API integration, local FAQ intent fallback, sentiment, keywords, categories
 - Deployment: Vercel frontend, Render/Railway backend, MongoDB Atlas
 
@@ -60,7 +60,7 @@ Set `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`, and optionally `OPENAI_API_KEY`.
 cp client/.env.example client/.env
 ```
 
-4. Seed demo data:
+4. Seed sample development data:
 
 ```bash
 npm run seed --prefix server
@@ -76,8 +76,8 @@ Frontend: `http://localhost:5173`
 Backend: `http://localhost:5000`
 API docs: `http://localhost:5000/api/docs`
 
-Demo user: `aarav@example.com` / `User@12345`
-Demo admin: value from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
+Sample seeded user: `aarav@example.com` / `User@12345`
+Sample seeded admin: value from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 
 ## Key Features
 
@@ -105,7 +105,7 @@ This repository includes `render.yaml` for the backend and `client/vercel.json` 
 - Environment variables: copy from `server/.env.example`
 - Use MongoDB Atlas connection string for `MONGO_URI`
 - Set `CLIENT_URL` to your Vercel URL
-- If `MONGO_URI` is not set or MongoDB is unavailable, the API runs in in-memory demo mode. Use MongoDB Atlas for real production persistence.
+- `MONGO_URI` is required for production account creation and login. Without MongoDB Atlas, protected auth routes return a database configuration error instead of using fake demo accounts.
 - OpenAPI docs are available at `/api/docs` and `/api/openapi.json`.
 
 ### Frontend on Vercel

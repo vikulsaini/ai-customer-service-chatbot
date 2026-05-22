@@ -38,7 +38,7 @@ Body:
 { "email": "aarav@example.com" }
 ```
 
-Returns a demo reset token.
+Returns a password reset token in development. In production, connect an email provider before exposing this to real users.
 
 ## Chat
 

@@ -7,7 +7,7 @@ let ready;
 const prepare = async () => {
   const connected = await connectDB();
   globalThis.__USE_MEMORY_STORE__ = !connected;
-  if (!connected) await memoryStore.ensureDemoAdmin();
+  if (!connected) await memoryStore.seedLocalFaqs();
 };
 
 export default async function handler(req, res) {

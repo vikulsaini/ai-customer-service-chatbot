@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const persist = (payload) => {
+    if (!payload?.token || !payload?.user) throw new Error("Invalid authentication response");
     localStorage.setItem("token", payload.token);
     localStorage.setItem("user", JSON.stringify(payload.user));
     setUser(payload.user);
@@ -21,6 +22,9 @@ export const AuthProvider = ({ children }) => {
       persist(data);
       toast.success("Welcome back");
       return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -33,6 +37,9 @@ export const AuthProvider = ({ children }) => {
       persist(data);
       toast.success(data.message || "Account created");
       return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Signup failed");
+      return false;
     } finally {
       setLoading(false);
     }

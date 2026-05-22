@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bot } from "lucide-react";
-import toast from "react-hot-toast";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { useAuth } from "../context/AuthContext";
@@ -11,7 +10,7 @@ export default function Login() {
   const navigate = useNavigate();
   const onSubmit = async (e) => {
     e.preventDefault();
-    const ok = await login(Object.fromEntries(new FormData(e.currentTarget))).catch((err) => toast.error(err.response?.data?.message || "Login failed"));
+    const ok = await login(Object.fromEntries(new FormData(e.currentTarget)));
     if (ok) navigate("/dashboard");
   };
   return <AuthCard title="Welcome back" footer={<Link className="text-ocean" to="/signup">Create account</Link>} onSubmit={onSubmit} loading={loading} submit="Login" />;

@@ -146,10 +146,8 @@ export const memoryStore = {
     return clone(store.chats.map((chat) => ({ ...chat, userId: store.users.find((user) => user._id === chat.userId) || chat.userId })));
   },
 
-  async ensureDemoAdmin() {
-    if (!store.users.length) {
-      await this.createUser({ name: "Project Admin", email: process.env.ADMIN_EMAIL || "admin@aics.local", password: process.env.ADMIN_PASSWORD || "Admin@12345", role: "admin" });
-      await this.createUser({ name: "Demo User", email: "demo@example.com", password: "Demo@12345", role: "user" });
+  async seedLocalFaqs() {
+    if (!store.faqs.length) {
       await this.createFaq({ category: "account", question: "I cannot access my account.", answer: "Verify your email and password first. If the issue persists, use Forgot Password to reset your credentials.", keywords: ["account", "login", "password"] });
       await this.createFaq({ category: "network", question: "VPN is not connecting.", answer: "Restart the VPN client, confirm internet connectivity, verify MFA, and share the exact error code if the issue continues.", keywords: ["vpn", "network", "remote"] });
       await this.createFaq({ category: "email", question: "Email is not syncing.", answer: "Check mailbox storage, restart the mail client, test webmail access, and create a ticket if delivery is affected.", keywords: ["email", "outlook", "mail"] });
