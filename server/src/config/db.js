@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   if (!process.env.MONGO_URI) {
-    console.log("MONGO_URI is not configured. Using in-memory demo store.");
+    console.log("MONGO_URI is not configured. Persistent authentication is disabled.");
     return false;
   }
 
@@ -12,7 +12,7 @@ const connectDB = async () => {
     console.log("MongoDB connected");
     return true;
   } catch (error) {
-    console.warn(`MongoDB unavailable, using in-memory demo store: ${error.message}`);
+    console.warn(`MongoDB unavailable. Persistent authentication is disabled: ${error.message}`);
     return false;
   }
 };
