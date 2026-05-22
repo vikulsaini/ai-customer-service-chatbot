@@ -11,7 +11,14 @@ const publicUser = (user) => ({ id: user._id, name: user.name, email: user.email
 
 export const signup = async (req, res) => {
   const exists = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email });
-  if (exists) return res.status(409).json({ message: "Email already registered" });
+  if (exists) {
+    if (usingMemoryStore() && (await memoryStore.comparePassword(exists, req.body.password))) {
+      const token = signToken(exists._id);
+      setAuthCookie(res, token);
+      return res.status(200).json({ user: publicUser(exists), token, message: "Account already exists. Signed in successfully." });
+    }
+    return res.status(409).json({ message: "Email already registered" });
+  }
   const user = usingMemoryStore() ? await memoryStore.createUser(req.body) : await User.create(req.body);
   const token = signToken(user._id);
   setAuthCookie(res, token);
@@ -19,7 +26,11 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
+  let user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
+  if (!user && usingMemoryStore() && req.body.password.length >= 8) {
+    const name = req.body.email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+    user = await memoryStore.createUser({ name: name || "Demo User", email: req.body.email, password: req.body.password });
+  }
   const matches = user && (usingMemoryStore() ? await memoryStore.comparePassword(user, req.body.password) : await user.matchPassword(req.body.password));
   if (!matches) return res.status(401).json({ message: "Invalid credentials" });
   const token = signToken(user._id);

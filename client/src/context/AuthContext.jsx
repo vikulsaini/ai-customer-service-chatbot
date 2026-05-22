@@ -29,9 +29,9 @@ export const AuthProvider = ({ children }) => {
   const signup = async (form) => {
     setLoading(true);
     try {
-      const { data } = await api.post("/auth/signup", form);
+      const { data } = await api.post("/auth/register", form);
       persist(data);
-      toast.success("Account created");
+      toast.success(data.message || "Account created");
       return true;
     } finally {
       setLoading(false);
