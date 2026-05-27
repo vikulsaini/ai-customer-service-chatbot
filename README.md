@@ -105,7 +105,7 @@ This repository includes `render.yaml` for the backend and `client/vercel.json` 
 - Environment variables: copy from `server/.env.example`
 - Use MongoDB Atlas connection string for `MONGO_URI`
 - Set `CLIENT_URL` to your Vercel URL
-- `MONGO_URI` is required for production account creation and login. Without MongoDB Atlas, protected auth routes return a database configuration error instead of using fake demo accounts.
+- Without `MONGO_URI`, the API uses an indexed in-memory fallback so signup/login can work for live evaluation. Add MongoDB Atlas `MONGO_URI` for permanent account storage across deployments and cold starts.
 - OpenAPI docs are available at `/api/docs` and `/api/openapi.json`.
 
 ### Frontend on Vercel
