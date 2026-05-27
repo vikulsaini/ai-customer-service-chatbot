@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { analyzeText, quickRepliesFor } from "./nlpService.js";
+import { analyzeText, buildLocalSupportReply, quickRepliesFor } from "./nlpService.js";
 
 const client = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -8,7 +8,7 @@ export const generateSupportReply = async ({ message, history = [], user }) => {
 
   if (!client) {
     return {
-      reply: analysis.faqAnswer || `I understand your ${analysis.category} request. Please share the affected application, error message, and urgency so I can guide you or create a ticket.`,
+      reply: buildLocalSupportReply({ message, analysis, history, user }),
       analysis,
       quickReplies: quickRepliesFor(analysis.category),
       source: "local-nlp"
