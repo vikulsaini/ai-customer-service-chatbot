@@ -6,7 +6,6 @@ const LOCAL_API_URL = "http://localhost:5000/api";
 const normalizeApiBaseUrl = (url) => {
   const requested = url || (import.meta.env.PROD ? PROJECT_API_URL : LOCAL_API_URL);
   const base = requested.replace(/\/+$/, "");
-  if (base.includes("varta-api")) return PROJECT_API_URL;
   return base;
 };
 
