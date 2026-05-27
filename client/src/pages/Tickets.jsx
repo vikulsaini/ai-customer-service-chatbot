@@ -12,9 +12,16 @@ export default function Tickets() {
   const [loading, setLoading] = useState(true);
 
   const loadTickets = async () => {
-    const { data } = await api.get("/tickets");
-    setTickets(data);
-    setLoading(false);
+    setLoading(true);
+    try {
+      const { data } = await api.get("/tickets");
+      setTickets(data);
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to load tickets.");
+      setTickets([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -24,16 +31,24 @@ export default function Tickets() {
   const createTicket = async (event) => {
     event.preventDefault();
     const form = Object.fromEntries(new FormData(event.currentTarget));
-    const { data } = await api.post("/tickets", form);
-    setTickets((items) => [data, ...items]);
-    event.currentTarget.reset();
-    toast.success("Ticket created");
+    try {
+      const { data } = await api.post("/tickets", form);
+      setTickets((items) => [data, ...items]);
+      event.currentTarget.reset();
+      toast.success("Ticket created");
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error(error.response?.data?.message || "Unable to create ticket.");
+    }
   };
 
   const updateStatus = async (ticket, status) => {
-    const { data } = await api.put(`/tickets/${ticket._id}`, { status });
-    setTickets((items) => items.map((item) => (item._id === ticket._id ? data : item)));
-    toast.success("Ticket updated");
+    try {
+      const { data } = await api.put(`/tickets/${ticket._id}`, { status });
+      setTickets((items) => items.map((item) => (item._id === ticket._id ? data : item)));
+      toast.success("Ticket updated");
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to update ticket.");
+    }
   };
 
   return (

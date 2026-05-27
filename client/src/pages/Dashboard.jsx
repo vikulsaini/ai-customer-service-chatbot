@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Activity, CheckCircle2, MessageSquare, Users } from "lucide-react";
+import toast from "react-hot-toast";
 import StatCard from "../components/StatCard";
 import api from "../services/api";
 
 export default function Dashboard() {
   const [history, setHistory] = useState([]);
-  useEffect(() => { api.get("/chat/history").then(({ data }) => setHistory(data)); }, []);
+
+  useEffect(() => {
+    api.get("/chat/history")
+      .then(({ data }) => setHistory(data))
+      .catch((error) => {
+        if (error.response?.status !== 401) toast.error("Unable to load dashboard data.");
+        setHistory([]);
+      });
+  }, []);
+
   const resolved = history.filter((c) => c.resolved).length;
   return (
     <div className="grid gap-4">

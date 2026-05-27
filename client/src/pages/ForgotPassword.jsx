@@ -8,9 +8,13 @@ export default function ForgotPassword() {
   const [token, setToken] = useState("");
   const submit = async (e) => {
     e.preventDefault();
-    const { data } = await api.post("/auth/forgot-password", Object.fromEntries(new FormData(e.currentTarget)));
-    setToken(data.resetToken || "");
-    toast.success(data.message);
+    try {
+      const { data } = await api.post("/auth/forgot-password", Object.fromEntries(new FormData(e.currentTarget)));
+      setToken(data.resetToken || "");
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to process password reset.");
+    }
   };
   return (
     <main className="grid min-h-screen place-items-center bg-[#eef7f4] p-5 dark:bg-[#07111f]">

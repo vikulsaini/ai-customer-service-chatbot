@@ -11,25 +11,37 @@ export default function AdminPanel() {
   const [analytics, setAnalytics] = useState({});
 
   useEffect(() => {
-    Promise.all([api.get("/admin/users"), api.get("/admin/chats"), api.get("/admin/analytics"), api.get("/tickets")]).then(([u, c, a, t]) => {
-      setUsers(u.data);
-      setChats(c.data);
-      setAnalytics(a.data);
-      setTickets(t.data);
-    });
+    Promise.all([api.get("/admin/users"), api.get("/admin/chats"), api.get("/admin/analytics"), api.get("/tickets")])
+      .then(([u, c, a, t]) => {
+        setUsers(u.data);
+        setChats(c.data);
+        setAnalytics(a.data);
+        setTickets(t.data);
+      })
+      .catch((error) => {
+        if (error.response?.status !== 401) toast.error("Unable to load admin data.");
+      });
   }, []);
 
   const suspendUser = async (user) => {
     const status = user.status === "blocked" ? "active" : "blocked";
-    const { data } = await api.put(`/admin/users/${user._id}/status`, { status });
-    setUsers((items) => items.map((item) => (item._id === user._id ? data : item)));
-    toast.success(status === "blocked" ? "User suspended" : "User restored");
+    try {
+      const { data } = await api.put(`/admin/users/${user._id}/status`, { status });
+      setUsers((items) => items.map((item) => (item._id === user._id ? data : item)));
+      toast.success(status === "blocked" ? "User suspended" : "User restored");
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to update user status.");
+    }
   };
 
   const updateTicket = async (ticket, status) => {
-    const { data } = await api.put(`/tickets/${ticket._id}`, { status });
-    setTickets((items) => items.map((item) => (item._id === ticket._id ? data : item)));
-    toast.success("Ticket status updated");
+    try {
+      const { data } = await api.put(`/tickets/${ticket._id}`, { status });
+      setTickets((items) => items.map((item) => (item._id === ticket._id ? data : item)));
+      toast.success("Ticket status updated");
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to update ticket.");
+    }
   };
 
   return (

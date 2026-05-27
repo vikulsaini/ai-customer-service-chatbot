@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import { Mic, Paperclip, Send, Volume2 } from "lucide-react";
+import toast from "react-hot-toast";
 import Button from "../components/Button";
 import api from "../services/api";
 
@@ -19,11 +20,17 @@ export default function Chatbot() {
     setMessages((m) => [...m, userMsg]);
     setText("");
     setTyping(true);
-    const { data } = await api.post("/chat/message", { message: value, chatId });
-    setChatId(data.chat._id);
-    setQuickReplies(data.quickReplies);
-    setMessages((m) => [...m, { role: "assistant", content: data.reply, timestamp: new Date(), meta: data.analysis }]);
-    setTyping(false);
+    try {
+      const { data } = await api.post("/chat/message", { message: value, chatId });
+      setChatId(data.chat._id);
+      setQuickReplies(data.quickReplies);
+      setMessages((m) => [...m, { role: "assistant", content: data.reply, timestamp: new Date(), meta: data.analysis }]);
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error(error.response?.data?.message || "AI response failed. Please try again.");
+      setMessages((m) => [...m, { role: "assistant", content: "I could not process that request right now. Please try again in a moment.", timestamp: new Date() }]);
+    } finally {
+      setTyping(false);
+    }
   };
 
   const speak = (msg) => {

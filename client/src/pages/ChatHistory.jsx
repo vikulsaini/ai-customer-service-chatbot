@@ -11,9 +11,15 @@ export default function ChatHistory() {
 
   const loadChats = async () => {
     setLoading(true);
-    const { data } = await api.get("/chat/history", { params: search ? { search } : {} });
-    setChats(data);
-    setLoading(false);
+    try {
+      const { data } = await api.get("/chat/history", { params: search ? { search } : {} });
+      setChats(data);
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to load chat history.");
+      setChats([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -21,9 +27,13 @@ export default function ChatHistory() {
   }, []);
 
   const deleteChat = async (id) => {
-    await api.delete(`/chat/${id}`).catch(() => api.delete(`/chat/delete/${id}`));
-    setChats((items) => items.filter((item) => item._id !== id));
-    toast.success("Chat deleted");
+    try {
+      await api.delete(`/chat/${id}`).catch(() => api.delete(`/chat/delete/${id}`));
+      setChats((items) => items.filter((item) => item._id !== id));
+      toast.success("Chat deleted");
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to delete chat.");
+    }
   };
 
   const totals = useMemo(() => ({

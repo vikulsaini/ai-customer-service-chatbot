@@ -14,10 +14,33 @@ const api = axios.create({
   withCredentials: true
 });
 
+let authExpiredDispatched = false;
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => {
+    authExpiredDispatched = false;
+    return response;
+  },
+  (error) => {
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || "";
+    const isAuthRequest = ["/auth/login", "/auth/register", "/auth/forgot-password"].some((path) => requestUrl.includes(path));
+
+    if (status === 401 && !isAuthRequest && !authExpiredDispatched) {
+      authExpiredDispatched = true;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new CustomEvent("auth:expired"));
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HelpCircle, Search } from "lucide-react";
+import toast from "react-hot-toast";
 import Button from "../components/Button";
 import api from "../services/api";
 
@@ -10,9 +11,15 @@ export default function FAQ() {
 
   const loadFaqs = async () => {
     setLoading(true);
-    const { data } = await api.get("/faq", { params: search ? { search } : {} });
-    setFaqs(data);
-    setLoading(false);
+    try {
+      const { data } = await api.get("/faq", { params: search ? { search } : {} });
+      setFaqs(data);
+    } catch (error) {
+      if (error.response?.status !== 401) toast.error("Unable to load FAQ answers.");
+      setFaqs([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

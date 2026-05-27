@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 
@@ -7,6 +7,22 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user") || "null"));
   const [loading, setLoading] = useState(false);
+
+  const clearSession = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
+  useEffect(() => {
+    const handleExpiredSession = () => {
+      clearSession();
+      toast.error("Session expired. Please login again.");
+    };
+
+    window.addEventListener("auth:expired", handleExpiredSession);
+    return () => window.removeEventListener("auth:expired", handleExpiredSession);
+  }, []);
 
   const persist = (payload) => {
     if (!payload?.token || !payload?.user) throw new Error("Invalid authentication response");
@@ -47,9 +63,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     await api.post("/auth/logout").catch(() => {});
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
+    clearSession();
   };
 
   const value = useMemo(() => ({ user, setUser, loading, login, signup, logout, isAdmin: user?.role === "admin" }), [user, loading]);
