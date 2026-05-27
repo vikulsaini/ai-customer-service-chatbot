@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const PROJECT_API_URL = "https://server-zeta-one-69.vercel.app/api";
+const LOCAL_API_URL = "http://localhost:5000/api";
+
 const normalizeApiBaseUrl = (url) => {
-  const base = (url || "http://localhost:5000/api").replace(/\/+$/, "");
+  const requested = url || (import.meta.env.PROD ? PROJECT_API_URL : LOCAL_API_URL);
+  const base = requested.replace(/\/+$/, "");
+  if (base.includes("varta-api")) return PROJECT_API_URL;
   return base;
 };
 
