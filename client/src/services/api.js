@@ -19,6 +19,8 @@ let authExpiredDispatched = false;
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  const sessionUser = localStorage.getItem("user");
+  if (sessionUser) config.headers["X-Session-User"] = encodeURIComponent(sessionUser);
   return config;
 });
 

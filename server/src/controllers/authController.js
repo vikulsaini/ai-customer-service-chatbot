@@ -15,7 +15,7 @@ export const signup = async (req, res) => {
 
   const user = usingMemoryStore() ? await memoryStore.createUser(req.body) : await User.create(req.body);
   if (!user) return res.status(409).json({ message: "Email already registered" });
-  const token = signToken(user._id);
+  const token = signToken(user);
   setAuthCookie(res, token);
   res.status(201).json({ user: publicUser(user), token });
 };
@@ -31,13 +31,17 @@ export const login = async (req, res) => {
 
   const matches = user && (usingMemoryStore() ? await memoryStore.comparePassword(user, req.body.password) : await user.matchPassword(req.body.password));
   if (!matches) return res.status(401).json({ message: "Invalid credentials" });
-  const token = signToken(user._id);
+  const token = signToken(user);
   setAuthCookie(res, token);
   res.json({ user: publicUser(user), token });
 };
 
 export const logout = (_req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+  });
   res.json({ message: "Logged out" });
 };
 
