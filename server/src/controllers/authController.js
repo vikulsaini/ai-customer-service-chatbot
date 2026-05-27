@@ -9,6 +9,14 @@ export const loginRules = [body("email").isEmail(), body("password").notEmpty()]
 
 const publicUser = (user) => ({ id: user._id, name: user.name, email: user.email, role: user.role, profileImage: user.profileImage, status: user.status });
 
+const nameFromEmail = (email = "") => {
+  const local = email.split("@")[0] || "Customer";
+  return local
+    .replace(/[._-]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .slice(0, 60);
+};
+
 export const signup = async (req, res) => {
   const exists = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email });
   if (exists) return res.status(409).json({ message: "Email already registered" });
@@ -21,11 +29,20 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
+  let user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
   if (!user && usingMemoryStore()) {
-    return res.status(401).json({
-      code: "TEMP_DATABASE_ACCOUNT_MISSING",
-      message: "Account not found in the temporary database. Please sign up again, or connect MongoDB Atlas for permanent login."
+    user = await memoryStore.createUser({
+      name: req.body.name || nameFromEmail(req.body.email),
+      email: req.body.email,
+      password: req.body.password
+    });
+    if (!user) return res.status(409).json({ message: "Temporary account restore failed. Please try again." });
+    const token = signToken(user);
+    setAuthCookie(res, token);
+    return res.json({
+      user: publicUser(user),
+      token,
+      message: "Temporary account restored. Connect MongoDB Atlas for permanent login."
     });
   }
 
