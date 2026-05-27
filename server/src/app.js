@@ -42,6 +42,8 @@ app.get("/api/health", (_req, res) =>
     name: "AI Customer Service Chatbot API",
     database: globalThis.__USE_MEMORY_STORE__ ? "indexed-memory-fallback" : "mongodb",
     mongoConfigured: Boolean(process.env.MONGO_URI),
+    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
+    docs: "/api/docs",
     note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
   })
 );
@@ -51,6 +53,8 @@ app.get("/health", (_req, res) =>
     name: "AI Customer Service Chatbot API",
     database: globalThis.__USE_MEMORY_STORE__ ? "indexed-memory-fallback" : "mongodb",
     mongoConfigured: Boolean(process.env.MONGO_URI),
+    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
+    docs: "/api/docs",
     note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
   })
 );
