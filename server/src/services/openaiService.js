@@ -16,23 +16,33 @@ export const generateSupportReply = async ({ message, history = [], user }) => {
   }
 
   const recent = history.slice(-8).map((m) => ({ role: m.role, content: m.content }));
-  const response = await client.responses.create({
-    model: process.env.OPENAI_MODEL || "gpt-5",
-    instructions:
-      "You are an IT-sector customer service chatbot. Give concise, empathetic, technically useful answers. Detect when a support ticket is needed. Never invent account-specific data.",
-    input: [
-      ...recent,
-      {
-        role: "user",
-        content: `Customer: ${user.name}\nMessage: ${message}\nDetected intent: ${analysis.intent}\nSentiment: ${analysis.sentiment}\nCategory: ${analysis.category}`
-      }
-    ]
-  });
+  try {
+    const response = await client.responses.create({
+      model: process.env.OPENAI_MODEL || "gpt-5",
+      instructions:
+        "You are an IT-sector customer service chatbot. Give concise, empathetic, technically useful answers. Detect when a support ticket is needed. Never invent account-specific data.",
+      input: [
+        ...recent,
+        {
+          role: "user",
+          content: `Customer: ${user.name}\nMessage: ${message}\nDetected intent: ${analysis.intent}\nSentiment: ${analysis.sentiment}\nCategory: ${analysis.category}`
+        }
+      ]
+    });
 
-  return {
-    reply: response.output_text || "I reviewed your request. Could you provide one more detail so I can help accurately?",
-    analysis,
-    quickReplies: quickRepliesFor(analysis.category),
-    source: "openai"
-  };
+    return {
+      reply: response.output_text || "I reviewed your request. Could you provide one more detail so I can help accurately?",
+      analysis,
+      quickReplies: quickRepliesFor(analysis.category),
+      source: "openai"
+    };
+  } catch (error) {
+    console.error("OpenAI response failed, using local fallback:", error.message);
+    return {
+      reply: buildLocalSupportReply({ message, analysis, history, user }),
+      analysis,
+      quickReplies: quickRepliesFor(analysis.category),
+      source: "local-nlp-fallback"
+    };
+  }
 };
