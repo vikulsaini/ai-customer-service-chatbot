@@ -22,6 +22,13 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   const user = usingMemoryStore() ? await memoryStore.findUserByEmail(req.body.email) : await User.findOne({ email: req.body.email }).select("+password");
+  if (!user && usingMemoryStore()) {
+    return res.status(401).json({
+      code: "TEMP_DATABASE_ACCOUNT_MISSING",
+      message: "Account not found in the temporary database. Please sign up again, or connect MongoDB Atlas for permanent login."
+    });
+  }
+
   const matches = user && (usingMemoryStore() ? await memoryStore.comparePassword(user, req.body.password) : await user.matchPassword(req.body.password));
   if (!matches) return res.status(401).json({ message: "Invalid credentials" });
   const token = signToken(user._id);
