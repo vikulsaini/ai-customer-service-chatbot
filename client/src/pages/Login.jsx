@@ -19,15 +19,15 @@ export default function Login() {
 export function AuthCard({ title, footer, onSubmit, loading, submit, signup = false }) {
   return (
     <main className="grid min-h-screen place-items-center bg-[linear-gradient(135deg,#d9f99d,#bae6fd,#fef3c7)] p-5 dark:bg-[linear-gradient(135deg,#07111f,#14213d)]">
-      <form onSubmit={onSubmit} className="glass w-full max-w-md rounded-lg p-6">
-        <div className="mb-6 flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-lg bg-ocean text-white"><Bot /></span><h1 className="text-2xl font-bold text-slate-950 dark:text-white">{title}</h1></div>
+      <form onSubmit={onSubmit} className="glass w-full max-w-md rounded-lg p-5 sm:p-6">
+        <div className="mb-6 flex items-center gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-ocean text-white"><Bot /></span><h1 className="text-xl font-bold text-slate-950 dark:text-white sm:text-2xl">{title}</h1></div>
         <div className="grid gap-4">
           {signup && <Input label="Full name" name="name" required />}
           <Input label="Email" name="email" type="email" required />
           <Input label="Password" name="password" type="password" required minLength="8" />
           <Button disabled={loading}>{loading ? "Please wait..." : submit}</Button>
         </div>
-        <div className="mt-5 flex items-center justify-between text-sm text-slate-600 dark:text-slate-300"><Link to="/forgot-password">Forgot password?</Link>{footer}</div>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600 dark:text-slate-300"><Link to="/forgot-password">Forgot password?</Link>{footer}</div>
       </form>
     </main>
   );

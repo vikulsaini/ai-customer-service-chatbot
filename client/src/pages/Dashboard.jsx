@@ -17,18 +17,31 @@ export default function Dashboard() {
   }, []);
 
   const resolved = history.filter((c) => c.resolved).length;
+
   return (
     <div className="grid gap-4">
-      <header className="glass rounded-lg p-5"><h1 className="text-3xl font-bold">User Dashboard</h1><p className="mt-2 text-slate-600 dark:text-slate-300">Support activity, chat health, and ticket readiness.</p></header>
-      <div className="grid gap-4 md:grid-cols-4">
+      <header className="glass rounded-lg p-4 sm:p-5">
+        <h1 className="text-2xl font-bold sm:text-3xl">User Dashboard</h1>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 sm:text-base">Support activity, chat health, and ticket readiness.</p>
+      </header>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Total chats" value={history.length} icon={MessageSquare} />
         <StatCard label="Resolved queries" value={resolved} icon={CheckCircle2} tone="text-emerald-600" />
         <StatCard label="Active users" value="1" icon={Users} tone="text-violet" />
         <StatCard label="NLP categories" value={new Set(history.map((c) => c.category)).size || 0} icon={Activity} tone="text-coral" />
       </div>
-      <section className="glass rounded-lg p-5">
+
+      <section className="glass rounded-lg p-4 sm:p-5">
         <h2 className="mb-4 text-xl font-bold">Recent Chats</h2>
-        <div className="grid gap-3">{history.slice(0, 5).map((chat) => <div key={chat._id} className="rounded-lg bg-white/55 p-4 dark:bg-white/10"><p className="font-semibold">{chat.title}</p><p className="text-sm text-slate-500">{chat.category} · {chat.sentiment}</p></div>)}</div>
+        <div className="grid gap-3">
+          {history.slice(0, 5).map((chat) => (
+            <div key={chat._id} className="rounded-lg bg-white/55 p-4 dark:bg-white/10">
+              <p className="break-words font-semibold">{chat.title}</p>
+              <p className="text-sm text-slate-500">{chat.category} · {chat.sentiment}</p>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );

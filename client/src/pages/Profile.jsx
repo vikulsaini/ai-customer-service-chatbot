@@ -19,5 +19,12 @@ export default function Profile() {
       if (error.response?.status !== 401) toast.error(error.response?.data?.message || "Unable to update profile.");
     }
   };
-  return <form onSubmit={save} className="glass max-w-2xl rounded-lg p-6"><h1 className="mb-5 text-3xl font-bold">User Profile</h1><Input label="Name" value={name} onChange={(e) => setName(e.target.value)} /><Input className="mt-4" label="Email" value={user?.email || ""} disabled /><Button className="mt-5">Save profile</Button></form>;
+  return (
+    <form onSubmit={save} className="glass max-w-2xl rounded-lg p-4 sm:p-6">
+      <h1 className="mb-5 text-2xl font-bold sm:text-3xl">User Profile</h1>
+      <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <Input className="mt-4" label="Email" value={user?.email || ""} disabled />
+      <Button className="mt-5 w-full sm:w-auto">Save profile</Button>
+    </form>
+  );
 }

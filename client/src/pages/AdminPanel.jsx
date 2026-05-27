@@ -46,12 +46,12 @@ export default function AdminPanel() {
 
   return (
     <div className="grid gap-4">
-      <header className="glass rounded-lg p-5">
-        <h1 className="flex items-center gap-2 text-3xl font-bold"><Shield />Admin Panel</h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-300">Monitor users, conversations, chatbot analytics, tickets, and abuse controls.</p>
+      <header className="glass rounded-lg p-4 sm:p-5">
+        <h1 className="flex items-center gap-2 text-2xl font-bold sm:text-3xl"><Shield className="shrink-0" />Admin Panel</h1>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 sm:text-base">Monitor users, conversations, chatbot analytics, tickets, and abuse controls.</p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Users" value={analytics.users || 0} icon={Users} />
         <StatCard label="Chats" value={analytics.chats || 0} icon={MessageSquare} />
         <StatCard label="Tickets" value={analytics.tickets || 0} icon={Ticket} />
@@ -59,37 +59,40 @@ export default function AdminPanel() {
       </div>
 
       <section className="grid gap-4 xl:grid-cols-3">
-        <div className="glass rounded-lg p-5">
+        <div className="glass rounded-lg p-4 sm:p-5">
           <h2 className="mb-4 text-xl font-bold">Manage Users</h2>
           {users.map((user) => (
-            <div key={user._id} className="mb-3 flex items-center justify-between gap-3 rounded-lg bg-white/55 p-3 dark:bg-white/10">
-              <span>{user.name}<small className="block text-slate-500">{user.email}</small></span>
-              <button onClick={() => suspendUser(user)} className={`rounded-lg px-3 py-2 text-xs font-bold ${user.status === "blocked" ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}>
+            <div key={user._id} className="mb-3 grid gap-3 rounded-lg bg-white/55 p-3 dark:bg-white/10 sm:grid-cols-[1fr_auto] sm:items-center">
+              <span className="min-w-0">
+                <span className="block truncate font-medium">{user.name}</span>
+                <small className="block truncate text-slate-500">{user.email}</small>
+              </span>
+              <button onClick={() => suspendUser(user)} className={`min-h-10 rounded-lg px-3 py-2 text-xs font-bold ${user.status === "blocked" ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"}`}>
                 {user.status === "blocked" ? "Restore" : "Suspend"}
               </button>
             </div>
           ))}
         </div>
 
-        <div className="glass rounded-lg p-5">
+        <div className="glass rounded-lg p-4 sm:p-5">
           <h2 className="mb-4 text-xl font-bold">Chat Logs</h2>
           {chats.slice(0, 8).map((chat) => (
             <div key={chat._id} className="mb-3 rounded-lg bg-white/55 p-3 dark:bg-white/10">
-              <p className="font-semibold">{chat.title}</p>
-              <p className="text-sm text-slate-500">{chat.userId?.email} · {chat.category} · {chat.sentiment}</p>
+              <p className="break-words font-semibold">{chat.title}</p>
+              <p className="break-words text-sm text-slate-500">{chat.userId?.email} · {chat.category} · {chat.sentiment}</p>
             </div>
           ))}
         </div>
 
-        <div className="glass rounded-lg p-5">
+        <div className="glass rounded-lg p-4 sm:p-5">
           <h2 className="mb-4 text-xl font-bold">Support Tickets</h2>
           {tickets.slice(0, 8).map((ticket) => (
             <div key={ticket._id} className="mb-3 rounded-lg bg-white/55 p-3 dark:bg-white/10">
-              <p className="font-semibold">{ticket.issue}</p>
+              <p className="break-words font-semibold">{ticket.issue}</p>
               <p className="text-sm text-slate-500">{ticket.priority} · {ticket.status}</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {["open", "in-progress", "resolved"].map((status) => (
-                  <button key={status} onClick={() => updateTicket(ticket, status)} className={`rounded-lg px-2 py-1 text-xs ${ticket.status === status ? "bg-ocean text-white" : "bg-white/70 dark:bg-white/10"}`}>
+                  <button key={status} onClick={() => updateTicket(ticket, status)} className={`min-h-9 rounded-lg px-2 py-1 text-xs ${ticket.status === status ? "bg-ocean text-white" : "bg-white/70 dark:bg-white/10"}`}>
                     {status}
                   </button>
                 ))}
