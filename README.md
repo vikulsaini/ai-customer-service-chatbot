@@ -76,6 +76,11 @@ Frontend: `http://localhost:5173`
 Backend: `http://localhost:5000`
 API docs: `http://localhost:5000/api/docs`
 
+The backend supports both route styles for deployment compatibility:
+
+- Preferred: `/api/auth/register`, `/api/auth/login`
+- Compatible: `/auth/register`, `/auth/login`
+
 Sample seeded user: `aarav@example.com` / `User@12345`
 Sample seeded admin: value from `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 

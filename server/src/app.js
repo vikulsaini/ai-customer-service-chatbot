@@ -45,6 +45,15 @@ app.get("/api/health", (_req, res) =>
     note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
   })
 );
+app.get("/health", (_req, res) =>
+  res.json({
+    ok: true,
+    name: "AI Customer Service Chatbot API",
+    database: globalThis.__USE_MEMORY_STORE__ ? "indexed-memory-fallback" : "mongodb",
+    mongoConfigured: Boolean(process.env.MONGO_URI),
+    note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
+  })
+);
 app.use("/api", docsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
@@ -52,6 +61,15 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/faq", faqRoutes);
+
+// Compatibility routes for deployments whose frontend API base URL omits "/api".
+app.use("/", docsRoutes);
+app.use("/auth", authRoutes);
+app.use("/chat", chatRoutes);
+app.use("/users", userRoutes);
+app.use("/admin", adminRoutes);
+app.use("/tickets", ticketRoutes);
+app.use("/faq", faqRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
