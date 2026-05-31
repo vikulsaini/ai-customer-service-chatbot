@@ -36,27 +36,31 @@ app.use(cookieParser());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 250, standardHeaders: true, legacyHeaders: false }));
 
-app.get("/api/health", (_req, res) =>
-  res.json({
+const healthPayload = () => {
+  const mongoConfigured = Boolean(process.env.MONGO_URI);
+  const usingFallback = globalThis.__USE_MEMORY_STORE__;
+  return {
     ok: true,
     name: "AI Customer Service Chatbot API",
-    database: globalThis.__USE_MEMORY_STORE__ ? "indexed-memory-fallback" : "mongodb",
-    mongoConfigured: Boolean(process.env.MONGO_URI),
+    database: usingFallback ? "indexed-memory-fallback" : "mongodb",
+    mongoConfigured,
+    mongoConnected: mongoConfigured && !usingFallback,
     openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
     docs: "/api/docs",
-    note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
-  })
+    note: !mongoConfigured
+      ? "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
+      : usingFallback
+        ? "MongoDB Atlas is configured but unavailable. Check Atlas Network Access, database user credentials, and cluster URI."
+        : "MongoDB Atlas is connected.",
+    mongoError: usingFallback ? globalThis.__DB_ERROR__ || undefined : undefined
+  };
+};
+
+app.get("/api/health", (_req, res) =>
+  res.json(healthPayload())
 );
 app.get("/health", (_req, res) =>
-  res.json({
-    ok: true,
-    name: "AI Customer Service Chatbot API",
-    database: globalThis.__USE_MEMORY_STORE__ ? "indexed-memory-fallback" : "mongodb",
-    mongoConfigured: Boolean(process.env.MONGO_URI),
-    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
-    docs: "/api/docs",
-    note: process.env.MONGO_URI ? "MongoDB Atlas is configured." : "Using indexed in-memory fallback. Set MONGO_URI in Vercel for permanent account storage."
-  })
+  res.json(healthPayload())
 );
 app.use("/api", docsRoutes);
 app.use("/api/auth", authRoutes);
