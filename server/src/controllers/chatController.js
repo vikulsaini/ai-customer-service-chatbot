@@ -171,9 +171,11 @@ export const getHistory = async (req, res) => {
 
 export const deleteChat = async (req, res) => {
   if (usingMemoryStore()) {
-    await memoryStore.deleteChat(req.params.id, String(req.user._id));
+    const deleted = await memoryStore.deleteChat(req.params.id, String(req.user._id));
+    if (!deleted) return res.status(404).json({ message: "Chat not found" });
     return res.json({ message: "Chat deleted" });
   }
-  await Chat.deleteOne({ _id: req.params.id, userId: req.user._id });
+  const result = await Chat.deleteOne({ _id: req.params.id, userId: req.user._id });
+  if (!result.deletedCount) return res.status(404).json({ message: "Chat not found" });
   res.json({ message: "Chat deleted" });
 };

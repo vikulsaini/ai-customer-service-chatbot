@@ -30,7 +30,7 @@ export default function AdminPanel() {
       setUsers((items) => items.map((item) => (item._id === user._id ? data : item)));
       toast.success(status === "blocked" ? "User suspended" : "User restored");
     } catch (error) {
-      if (error.response?.status !== 401) toast.error("Unable to update user status.");
+      if (error.response?.status !== 401) toast.error(error.response?.data?.message || "Unable to update user status.");
     }
   };
 
@@ -40,7 +40,7 @@ export default function AdminPanel() {
       setTickets((items) => items.map((item) => (item._id === ticket._id ? data : item)));
       toast.success("Ticket status updated");
     } catch (error) {
-      if (error.response?.status !== 401) toast.error("Unable to update ticket.");
+      if (error.response?.status !== 401) toast.error(error.response?.data?.message || "Unable to update ticket.");
     }
   };
 

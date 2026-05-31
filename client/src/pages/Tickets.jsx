@@ -47,7 +47,7 @@ export default function Tickets() {
       setTickets((items) => items.map((item) => (item._id === ticket._id ? data : item)));
       toast.success("Ticket updated");
     } catch (error) {
-      if (error.response?.status !== 401) toast.error("Unable to update ticket.");
+      if (error.response?.status !== 401) toast.error(error.response?.data?.message || "Unable to update ticket.");
     }
   };
 
@@ -87,13 +87,17 @@ export default function Tickets() {
                 <h2 className="mt-1 break-words text-lg font-bold sm:text-xl">{ticket.issue}</h2>
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{ticket.category} · {ticket.priority} priority · {new Date(ticket.createdAt).toLocaleString()}</p>
               </div>
-              <div className="flex flex-wrap gap-2 md:justify-end">
-                {["open", "in-progress", "resolved", "closed"].map((status) => (
-                  <button key={status} disabled={!isAdmin && status !== ticket.status} onClick={() => updateStatus(ticket, status)} className={`min-h-10 rounded-lg px-3 py-2 text-xs font-semibold ${ticket.status === status ? "bg-ocean text-white" : "bg-white/60 dark:bg-white/10"} disabled:cursor-not-allowed disabled:opacity-60`}>
-                    {status}
-                  </button>
-                ))}
-              </div>
+              {isAdmin ? (
+                <div className="flex flex-wrap gap-2 md:justify-end">
+                  {["open", "in-progress", "resolved", "closed"].map((status) => (
+                    <button key={status} onClick={() => updateStatus(ticket, status)} className={`min-h-10 rounded-lg px-3 py-2 text-xs font-semibold ${ticket.status === status ? "bg-ocean text-white" : "bg-white/60 dark:bg-white/10"}`}>
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <span className="self-start rounded-lg bg-white/60 px-3 py-2 text-xs font-semibold uppercase text-slate-600 dark:bg-white/10 dark:text-slate-300">{ticket.status}</span>
+              )}
             </div>
           </article>
         ))}

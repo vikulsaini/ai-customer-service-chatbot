@@ -40,6 +40,16 @@ Body:
 
 Returns a password reset token in development. In production, connect an email provider before exposing this to real users.
 
+### POST `/auth/reset-password`
+
+Body:
+
+```json
+{ "token": "reset-token", "password": "NewPass@123" }
+```
+
+Updates the password when the reset token is valid.
+
 ## Chat
 
 All chat routes require `Authorization: Bearer <token>`.
@@ -77,9 +87,13 @@ Returns:
 
 Returns authenticated user's chats.
 
+### DELETE `/chat/:id`
+
+Deletes a user-owned chat. Returns `404` when the chat does not exist.
+
 ### DELETE `/chat/delete/:id`
 
-Deletes a user-owned chat.
+Compatibility alias for deleting a user-owned chat.
 
 ## Users
 
@@ -111,7 +125,21 @@ Users see their own tickets. Admins see all tickets.
 
 ### PUT `/tickets/:id`
 
-Updates status, priority, assignee, or issue fields. Admins can update all tickets; users can update their own tickets.
+Users can update only their own ticket `issue`, `priority`, and `category`.
+
+Admins can also update `status` and `assignedTo`.
+
+Allowed statuses:
+
+```json
+["open", "in-progress", "resolved", "closed"]
+```
+
+Allowed priorities:
+
+```json
+["low", "medium", "high", "critical"]
+```
 
 ## FAQ
 

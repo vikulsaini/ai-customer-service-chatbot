@@ -27,7 +27,12 @@ export const getAnalytics = async (_req, res) => {
 };
 
 export const updateUserStatus = async (req, res) => {
-  if (usingMemoryStore()) return res.json(await memoryStore.updateUser(req.params.id, { status: req.body.status }));
+  if (usingMemoryStore()) {
+    const user = await memoryStore.updateUser(req.params.id, { status: req.body.status });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    return res.json(user);
+  }
   const user = await User.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true }).select("-password");
+  if (!user) return res.status(404).json({ message: "User not found" });
   res.json(user);
 };
