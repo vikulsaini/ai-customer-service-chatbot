@@ -27,7 +27,7 @@ export const wantsPriorityChange = (message = "") => (
 export const isTicketDetailsFollowUp = (message = "", history = []) => {
   const lastAssistant = [...history].reverse().find((item) => item.role === "assistant")?.content || "";
   const lower = message.toLowerCase().trim();
-  const isShortCommand = /^(hi|hello|hey|thanks|ok|okay|yes|no|create ticket|view tickets|mark high priority)$/.test(lower);
+  const isShortCommand = /^(hi|hello|hey|thanks|ok|okay|yes|no|create ticket|view tickets|mark high priority|reset password|update profile|check license|share error code)$/.test(lower);
   return /issue summary|ticket details|affected service|priority/i.test(lastAssistant) && message.trim().length > 12 && !isShortCommand;
 };
 
