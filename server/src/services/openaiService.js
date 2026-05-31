@@ -10,7 +10,7 @@ export const generateSupportReply = async ({ message, history = [], user }) => {
     return {
       reply: buildLocalSupportReply({ message, analysis, history, user }),
       analysis,
-      quickReplies: quickRepliesFor(analysis.category),
+      quickReplies: quickRepliesFor(analysis.category, analysis.intent),
       source: "local-nlp"
     };
   }
@@ -33,7 +33,7 @@ export const generateSupportReply = async ({ message, history = [], user }) => {
     return {
       reply: response.output_text || "I reviewed your request. Could you provide one more detail so I can help accurately?",
       analysis,
-      quickReplies: quickRepliesFor(analysis.category),
+      quickReplies: quickRepliesFor(analysis.category, analysis.intent),
       source: "openai"
     };
   } catch (error) {
@@ -41,7 +41,7 @@ export const generateSupportReply = async ({ message, history = [], user }) => {
     return {
       reply: buildLocalSupportReply({ message, analysis, history, user }),
       analysis,
-      quickReplies: quickRepliesFor(analysis.category),
+      quickReplies: quickRepliesFor(analysis.category, analysis.intent),
       source: "local-nlp-fallback"
     };
   }

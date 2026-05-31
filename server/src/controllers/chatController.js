@@ -167,7 +167,7 @@ export const sendMessage = async (req, res) => {
     });
   }
 
-  res.json({ chat, reply: ai.reply, analysis: ai.analysis, quickReplies: ai.quickReplies || quickRepliesFor(ai.analysis.category), ticket });
+  res.json({ chat, reply: ai.reply, analysis: ai.analysis, quickReplies: ai.quickReplies || quickRepliesFor(ai.analysis.category, ai.analysis.intent), ticket });
 };
 
 export const getHistory = async (req, res) => {
