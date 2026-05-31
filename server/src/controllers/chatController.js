@@ -9,6 +9,7 @@ import {
   getRequestedPriority,
   isPureTicketCommand,
   isTicketDetailsFollowUp,
+  isTicketPromptConfirmation,
   wantsPriorityChange,
   wantsTicketCreation,
   wantsTicketList
@@ -79,6 +80,14 @@ const handleTicketAction = async ({ req, chat, message, history, analysis }) => 
   if (isPureTicketCommand(message) || (wantsTicketCreation(message) && !issue)) {
     return {
       reply: "Sure. Please send the issue summary, affected service, and priority. Example: \"Create ticket for Outlook not syncing, high priority.\"",
+      ticket: null,
+      quickReplies: ["High priority", "Medium priority", "Cancel"]
+    };
+  }
+
+  if (isTicketPromptConfirmation(message, history)) {
+    return {
+      reply: "Great. Type the full ticket details in one message, for example: \"Outlook is not syncing on Windows 11, high priority.\"",
       ticket: null,
       quickReplies: ["High priority", "Medium priority", "Cancel"]
     };

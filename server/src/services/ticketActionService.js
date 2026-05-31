@@ -24,6 +24,11 @@ export const wantsPriorityChange = (message = "") => (
   /\b(critical|high|medium|low)\s+priority\b/i.test(message)
 );
 
+export const isTicketPromptConfirmation = (message = "", history = []) => {
+  const lastAssistant = [...history].reverse().find((item) => item.role === "assistant")?.content || "";
+  return /issue summary|affected service|priority/i.test(lastAssistant) && /^(yes|yeah|ok|okay|sure)$/i.test(message.trim());
+};
+
 export const isTicketDetailsFollowUp = (message = "", history = []) => {
   const lastAssistant = [...history].reverse().find((item) => item.role === "assistant")?.content || "";
   const lower = message.toLowerCase().trim();

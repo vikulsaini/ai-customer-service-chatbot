@@ -1,4 +1,5 @@
 const intents = [
+  { keys: ["contact admin", "admin help", "administrator", "blocked account"], intent: "contact_admin", category: "account", answer: "I can connect this to an admin path. Share the affected account email, issue summary, and urgency, or create a ticket so an admin can review it." },
   { keys: ["profile", "update profile", "edit profile", "change name"], intent: "profile_update", category: "profile", answer: "Open the Profile page to update your name or profile image. Your email address is kept fixed for account security." },
   { keys: ["reset password", "forgot password", "change password"], intent: "password_reset", category: "account", answer: "Use Forgot Password on the login page, enter your registered email, copy the reset token, then set a new password from the reset flow." },
   { keys: ["account", "access", "login", "password", "reset", "forgot", "credential", "signin", "sign in"], intent: "account_access", category: "account", answer: "For account access, first confirm the email is registered. If the password is wrong, use Forgot Password; if the account is blocked, contact an admin." },
